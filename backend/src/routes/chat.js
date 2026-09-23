@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { authRequired } from '../middlewares/auth.js';
+import { upload } from '../middlewares/upload.js';
+import { validate } from '../middlewares/validate.js';
+import { idRule, messageRules } from '../validators/domain.js';
+import { listConversations, startConversation, messages, sendMessage, deleteConversation } from '../controllers/chat.js';
+const router = Router();
+router.use(authRequired);
+router.post('/conversations', startConversation);
+router.get('/conversations', listConversations);
+router.get('/conversations/:id', idRule, validate, messages);
+router.post('/conversations/:id/messages', upload.single('image'), messageRules, validate, sendMessage);
+router.delete('/conversations/:id', idRule, validate, deleteConversation);
+export default router;

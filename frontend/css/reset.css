@@ -1,0 +1,7 @@
+*, *::before, *::after { box-sizing: border-box; }
+html { line-height: 1.5; -webkit-text-size-adjust: 100%; }
+body, h1, h2, h3, p, form, fieldset, legend { margin: 0; }
+button, input, textarea, select { font: inherit; }
+button { border: 0; cursor: pointer; }
+img { display: block; max-width: 100%; }
+fieldset { border: 0; padding: 0; }

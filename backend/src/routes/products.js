@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { authRequired, allowRoles } from '../middlewares/auth.js';
+import { upload } from '../middlewares/upload.js';
+import { validate } from '../middlewares/validate.js';
+import { productRules, idRule, productQueryRules } from '../validators/domain.js';
+import { listProducts, getProduct, listMine, createProduct, updateProduct, deleteProduct } from '../controllers/products.js';
+const router = Router();
+router.get('/mine', authRequired, allowRoles('vendedor', 'admin'), listMine);
+router.get('/', productQueryRules, validate, listProducts);
+router.post('/', authRequired, allowRoles('vendedor', 'admin'), upload.array('images', 5), productRules, validate, createProduct);
+router.get('/:id', idRule, validate, getProduct);
+router.put('/:id', authRequired, upload.array('images', 5), productRules, validate, updateProduct);
+router.delete('/:id', authRequired, idRule, validate, deleteProduct);
+export default router;

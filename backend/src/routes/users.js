@@ -1,0 +1,13 @@
+import { Router } from 'express';
+import { authRequired, allowRoles } from '../middlewares/auth.js';
+import { validate } from '../middlewares/validate.js';
+import { idRule } from '../validators/domain.js';
+import { upload } from '../middlewares/upload.js';
+import { listUsers, getUser, updateUser, deleteUser, toggleFavorite } from '../controllers/users.js';
+const router = Router();
+router.get('/', authRequired, allowRoles('admin'), listUsers);
+router.get('/:id', authRequired, idRule, validate, getUser);
+router.put('/:id', authRequired, upload.single('avatar'), idRule, validate, updateUser);
+router.delete('/:id', authRequired, idRule, validate, deleteUser);
+router.post('/:id/favorites/:productId', authRequired, idRule, validate, toggleFavorite);
+export default router;

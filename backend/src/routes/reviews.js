@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { authRequired, allowRoles } from '../middlewares/auth.js';
+import { validate } from '../middlewares/validate.js';
+import { reviewRules, idRule } from '../validators/domain.js';
+import { listReviews, createReview, deleteReview } from '../controllers/reviews.js';
+const router = Router();
+router.get('/:productId/reviews', reviewRules[0], validate, listReviews);
+router.post('/:productId/reviews', authRequired, reviewRules, validate, createReview);
+router.delete('/:productId/reviews/:id', authRequired, idRule, validate, deleteReview);
+export default router;

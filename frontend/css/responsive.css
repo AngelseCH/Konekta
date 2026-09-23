@@ -1,0 +1,37 @@
+@media (max-width: 700px) {
+  .auth-shell { padding: 16px; align-items: start; }
+  .auth-layout { display: block; margin: auto 0; }
+  .auth-aside { display: none; }
+  .auth-panel { padding: 30px 24px 26px; }
+  .brand { margin-bottom: 34px; }
+  .site-header { min-height: 0; }
+  .site-header .brand { flex: 0 0 auto; margin-bottom: 0; }
+  .header-nav { margin-left: auto; gap: 10px; }
+  .header-nav .btn-ghost { font-size: 12px; }
+  .hero-strip { margin-bottom: 24px; }
+  .type-row { overflow-x: auto; padding-bottom: 4px; }
+  .hero-strip h1 { max-width: 12ch; }
+  .filter-bar { justify-content: stretch; }
+  .filter-bar > * { flex: 1; }
+  .compact-select { width: 100%; }
+  .product-actions { grid-template-columns: 1fr; }
+  .detail-gallery { aspect-ratio: 1; }
+  .section-heading, .table-heading { align-items: flex-start; flex-direction: column; }
+  .table-heading .btn { width: 100%; }
+  .product-table { overflow-x: auto; }
+  .table-row { min-width: 520px; }
+}
+@media (max-width: 390px) {
+  .auth-shell { padding: 10px; }
+  .auth-panel { padding: 24px 18px; }
+  .role-options { grid-template-columns: 1fr; }
+  .form-options { align-items: flex-start; flex-direction: column; }
+  .header-search { margin-top: 4px; }
+  .header-nav .avatar { width: 32px; height: 32px; }
+  .header-nav .btn-ghost { font-size: 0; }
+  .header-nav .btn-ghost::after { content: 'Salir'; font-size: 12px; }
+  .main-content { width: calc(100% - 24px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

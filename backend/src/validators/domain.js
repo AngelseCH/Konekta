@@ -1,0 +1,8 @@
+import { body, param, query } from 'express-validator';
+
+const productRules = [body('name').trim().isLength({ min: 2, max: 120 }).withMessage('Nombre inválido'), body('listingType').optional().isIn(['product', 'service']).withMessage('Tipo inválido'), body('isActive').optional().isBoolean().withMessage('Estado inválido'), body('company').trim().notEmpty().withMessage('Empresa requerida'), body('category').trim().notEmpty().withMessage('Categoría requerida'), body('desc').trim().isLength({ min: 2 }).withMessage('Descripción requerida'), body('price').isFloat({ min: 0 }).withMessage('Precio inválido'), body('location.address').optional({ values: 'falsy' }).trim().isLength({ max: 240 }).withMessage('Dirección demasiado larga'), body('location.lat').optional({ values: 'falsy' }).isFloat({ min: -90, max: 90 }), body('location.lng').optional({ values: 'falsy' }).isFloat({ min: -180, max: 180 })];
+const reviewRules = [param('productId').isMongoId(), body('stars').isInt({ min: 1, max: 5 }).withMessage('Las estrellas deben estar entre 1 y 5'), body('text').trim().isLength({ min: 2, max: 1000 }).withMessage('Texto inválido')];
+const idRule = [param('id').isMongoId().withMessage('Id inválido')];
+const messageRules = [param('id').isMongoId(), body('text').optional({ values: 'falsy' }).trim().isLength({ min: 1, max: 2000 }).withMessage('Mensaje inválido')];
+const productQueryRules = [query('page').optional().isInt({ min: 1 }), query('limit').optional().isInt({ min: 1, max: 50 }), query('listingType').optional().isIn(['product', 'service']), query('minPrice').optional().isFloat({ min: 0 }), query('maxPrice').optional().isFloat({ min: 0 })];
+export { productRules, reviewRules, idRule, messageRules, productQueryRules };

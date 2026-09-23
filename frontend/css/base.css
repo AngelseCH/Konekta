@@ -1,0 +1,15 @@
+body {
+  min-width: 320px;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { font-family: 'Space Grotesk', 'DM Sans', sans-serif; letter-spacing: -.02em; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid rgba(37, 99, 235, .35); outline-offset: 2px; }
+.skip-link { position: fixed; left: 16px; top: -60px; z-index: 10; padding: 10px 14px; background: var(--ink); color: #fff; border-radius: var(--radius-sm); transition: top var(--ease); }
+.skip-link:focus { top: 16px; }
