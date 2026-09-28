@@ -5,7 +5,7 @@ import { Conversation } from '../models/Conversation.js';
 import { Message } from '../models/Message.js';
 
 const createSocketServer = (httpServer) => {
-  const io = new Server(httpServer, { cors: { origin: env.frontendUrl } });
+  const io = new Server(httpServer, { cors: { origin: env.frontendUrl, credentials: true } });
   io.use((socket, next) => {
     try {
       const token = socket.handshake.auth?.token;
