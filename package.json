@@ -9,7 +9,7 @@
     "frontend": "node frontend/server.mjs",
     "dev:all": "node frontend/server.mjs",
     "seed": "node backend/src/utils/seed.js",
-    "test": "node --check backend/server.js"
+    "test": "node scripts/check-syntax.js"
   },
   "keywords": [],
   "author": "",
