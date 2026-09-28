@@ -1,4 +1,4 @@
-import { io } from 'https://cdn.socket.io/4.8.1/socket.io.esm.min.js';
+const { io } = window;
 import { SOCKET_URL } from './config.js';
 import { api } from './api.js';
 import { getState } from './store.js';
