@@ -2,7 +2,7 @@ services:
   - type: web
     name: konekta
     runtime: node
-    plan: starter
+    plan: free
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /health
@@ -15,9 +15,3 @@ services:
         value: 7d
       - key: MONGO_URI
         sync: false
-      - key: UPLOAD_DIR
-        value: /var/data/uploads
-    disk:
-      name: konekta-uploads
-      mountPath: /var/data
-      sizeGB: 1
