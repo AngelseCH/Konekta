@@ -23,10 +23,10 @@
 .category-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: thin; }
 .type-row { display: flex; gap: 8px; margin-bottom: 10px; }
 .is-hidden { display: none !important; }
-.category-pill { flex: 0 0 auto; min-height: 36px; padding: 0 15px; color: var(--muted); background: rgba(255,255,255,0.66); border: 1px solid var(--line); border-radius: 999px; font-size: 13px; }
-.category-pill small { color: var(--faint); }
+.category-pill { flex: 0 0 auto; min-height: 36px; padding: 0 15px; color: var(--indigo); background: rgba(255,255,255,0.72); border: 1px solid rgba(113, 9, 39, 0.1); border-radius: 999px; font-size: 13px; }
+.category-pill small { color: var(--warm); }
 .category-pill.is-active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-deep)); border-color: transparent; }
-.category-pill.is-active small { color: rgba(255,255,255,0.78); }
+.category-pill.is-active small { color: rgba(255,255,255,0.8); }
 .filter-bar { display: flex; justify-content: flex-end; gap: 10px; margin: 24px 0; }
 .compact-select { width: auto; height: 40px; padding: 0 34px 0 12px; }
 .products-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
@@ -44,7 +44,7 @@
 .product-description { display: -webkit-box; min-height: 38px; margin: 10px 0; overflow: hidden; font-size: 13px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .product-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .product-meta strong, .detail-price { font-size: 20px; }
-.rating { color: #d97706; white-space: nowrap; font-size: 13px; }
+.rating { color: var(--secondary); white-space: nowrap; font-size: 13px; }
 .rating small { color: var(--muted); }
 .product-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
 .product-actions .btn { min-height: 38px; padding: 0 8px; font-size: 12px; }
@@ -52,7 +52,7 @@
 .empty-icon { margin-bottom: 10px; color: var(--faint); font-size: 38px; }
 .empty-state h2 { margin-bottom: 8px; color: var(--ink); }
 .empty-state .btn { margin-top: 20px; }
-.skeleton-card { height: 360px; background: linear-gradient(90deg, #f2f4f7 25%, #e8ebef 37%, #f2f4f7 63%); background-size: 400% 100%; border-radius: var(--radius-md); animation: shimmer 1.5s infinite; }
+.skeleton-card { height: 360px; background: linear-gradient(90deg, rgba(217, 195, 166, 0.6) 25%, rgba(243, 234, 224, 0.9) 37%, rgba(217, 195, 166, 0.6) 63%); background-size: 400% 100%; border-radius: var(--radius-md); animation: shimmer 1.5s infinite; }
 .back-link { display: inline-block; margin-bottom: 28px; color: var(--muted); font-size: 14px; }
 .product-detail { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .8fr); gap: 60px; align-items: start; }
 .detail-gallery { overflow: hidden; aspect-ratio: 1.2; background: var(--surface-alt); border-radius: var(--radius-md); }
@@ -67,7 +67,7 @@
 .product-schedule b { color: var(--ink); }
 .contact-phone { display: inline-block; margin-top: 12px; color: var(--accent); font-size: 13px; font-weight: 600; }
 .detail-price { margin-bottom: 12px; font-size: 30px; font-weight: 700; }
-.stock-badge, .badge { display: inline-block; padding: 5px 9px; color: #067647; background: #ecfdf3; border-radius: 99px; font-size: 12px; font-weight: 600; }
+.stock-badge, .badge { display: inline-block; padding: 5px 9px; color: #fff; background: linear-gradient(135deg, var(--secondary), var(--warm)); border-radius: 99px; font-size: 12px; font-weight: 600; }
 .detail-actions { display: grid; gap: 10px; margin-top: 28px; }
 .reviews-section { margin-top: 80px; padding-top: 38px; border-top: 1px solid var(--line); }
 .section-heading, .table-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
@@ -83,7 +83,7 @@
 .review-item small { color: var(--faint); }
 .review-form { display: grid; gap: 12px; max-width: 600px; margin-top: 34px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); }
 .star-picker { display: flex; gap: 4px; }
-.star-picker button { color: #d97706; background: transparent; font-size: 24px; }
+.star-picker button { color: var(--secondary); background: transparent; font-size: 24px; }
 .chat-fab { position: fixed; right: 24px; bottom: 24px; z-index: 9; width: 56px; height: 56px; color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-deep)); border-radius: 50%; box-shadow: 0 18px 34px rgba(123, 31, 45, 0.28); font-size: 26px; }
 .unread-badge { position: absolute; top: -2px; right: -2px; min-width: 18px; padding: 2px 4px; color: #fff; background: var(--danger); border-radius: 99px; font-size: 10px; }
 .chat-panel { position: fixed; right: 24px; bottom: 92px; z-index: 8; display: none; width: 400px; height: 600px; overflow: hidden; background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,243,234,0.97)); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: 0 24px 60px rgba(74, 15, 29, 0.18); }
