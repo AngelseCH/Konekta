@@ -17,7 +17,7 @@
   --line: rgba(113, 9, 39, 0.14);
   --canvas: #F7F3EE;
   --surface: #F3EAE0;
-  --surface-alt: #E0C9A7;
+  --surface-alt: #E9D8B6;
   --header: rgba(113, 9, 39, 0.96);
   --field-border: #D7BA8B;
   --soft-border: rgba(45, 44, 74, 0.08);
@@ -34,22 +34,37 @@
   --shadow-focus: 0 0 0 4px rgba(113, 9, 39, 0.12);
   --ease: 180ms ease;
 }
+:root[data-theme="light"] {
+  --ink: #2D2C4A;
+  --muted: #5F5B6F;
+  --faint: #8E7B68;
+  --line: rgba(113, 9, 39, 0.14);
+  --canvas: #F7F3EE;
+  --surface: #F3EAE0;
+  --surface-alt: #E9D8B6;
+  --header: rgba(113, 9, 39, 0.96);
+  --field-border: #D7BA8B;
+  --soft-border: rgba(45, 44, 74, 0.08);
+  --placeholder: #8A7A69;
+  --shadow-card: 0 18px 36px rgba(45, 44, 74, 0.12);
+  color-scheme: light;
+}
 :root[data-theme="dark"] {
   --ink: #F5F0EA;
   --muted: #D5C8B8;
   --faint: #B8A48E;
   --line: rgba(217, 195, 166, 0.18);
-  --canvas: #1A1B2D;
-  --surface: #2D2C4A;
-  --surface-alt: #3F3E60;
+  --canvas: #171B2B;
+  --surface: #262946;
+  --surface-alt: #3A3B5B;
   --header: rgba(45, 44, 74, 0.96);
   --field-border: rgba(181, 140, 79, 0.28);
   --soft-border: rgba(255, 255, 255, 0.07);
   --placeholder: #B8A89E;
   --shadow-card: 0 20px 38px rgba(7, 8, 19, 0.35);
+  color-scheme: dark;
 }
 :root[data-theme="system"] { color-scheme: light; }
 @media (prefers-color-scheme: dark) {
-  :root[data-theme="system"] { --ink: #F5F0EA; --muted: #D5C8B8; --faint: #B8A48E; --line: rgba(217, 195, 166, 0.18); --canvas: #1A1B2D; --surface: #2D2C4A; --surface-alt: #3F3E60; --header: rgba(45, 44, 74, 0.96); --field-border: rgba(181, 140, 79, 0.28); --soft-border: rgba(255,255,255,0.07); --placeholder: #B8A89E; --shadow-card: 0 20px 38px rgba(7, 8, 19, 0.35); color-scheme: dark; }
+  :root[data-theme="system"] { --ink: #F5F0EA; --muted: #D5C8B8; --faint: #B8A48E; --line: rgba(217, 195, 166, 0.18); --canvas: #171B2B; --surface: #262946; --surface-alt: #3A3B5B; --header: rgba(45, 44, 74, 0.96); --field-border: rgba(181, 140, 79, 0.28); --soft-border: rgba(255,255,255,0.07); --placeholder: #B8A89E; --shadow-card: 0 20px 38px rgba(7, 8, 19, 0.35); color-scheme: dark; }
 }
-:root[data-theme="light"] { color-scheme: light; }
