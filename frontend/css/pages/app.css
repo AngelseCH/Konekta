@@ -33,10 +33,19 @@
 .product-card { overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); transition: transform var(--ease), box-shadow var(--ease); }
 .product-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-card); }
 .product-image-wrap { position: relative; aspect-ratio: 1; overflow: hidden; background: var(--surface-alt); }
+.product-image-slider { position: relative; width: 100%; height: 100%; overflow: hidden; }
+.product-image-track { display: flex; width: 100%; height: 100%; transition: transform 220ms ease; }
+.product-image-slide { flex: 0 0 100%; width: 100%; height: 100%; }
 .product-image { width: 100%; height: 100%; object-fit: cover; transition: transform 240ms ease; }
 .product-card:hover .product-image { transform: scale(1.03); }
-.product-category { position: absolute; top: 12px; left: 12px; padding: 5px 8px; color: var(--ink); background: rgba(255,255,255,.9); border-radius: 5px; font-size: 11px; font-weight: 700; }
-.favorite-button { position: absolute; top: 10px; right: 10px; font-size: 20px; }
+.product-gallery-btn { position: absolute; top: 50%; z-index: 2; display: grid; place-items: center; width: 28px; height: 28px; color: #fff; background: rgba(18,22,29,0.45); border: 1px solid rgba(255,255,255,0.15); border-radius: 50%; transform: translateY(-50%); }
+.product-gallery-btn.prev { left: 10px; }
+.product-gallery-btn.next { right: 10px; }
+.product-gallery-dots { position: absolute; bottom: 10px; left: 50%; z-index: 2; display: flex; gap: 6px; transform: translateX(-50%); }
+.product-gallery-dot { width: 7px; height: 7px; background: rgba(255,255,255,0.7); border-radius: 50%; }
+.product-gallery-dot.is-active { background: #fff; box-shadow: 0 0 0 2px rgba(113,9,39,0.25); }
+.product-category { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 5px 8px; color: var(--ink); background: rgba(255,255,255,.9); border-radius: 5px; font-size: 11px; font-weight: 700; }
+.favorite-button { position: absolute; top: 10px; right: 10px; z-index: 2; font-size: 20px; }
 .product-card-body { padding: 15px; }
 .product-card h3 { overflow: hidden; margin-bottom: 4px; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
 .product-company, .muted, .product-description { color: var(--muted); }
@@ -108,17 +117,23 @@
 .chat-messages { display: flex; flex: 1; flex-direction: column; gap: 8px; overflow: auto; padding: 12px 4px; }
 .message { align-self: flex-start; max-width: 78%; padding: 10px 12px; color: var(--ink); background: rgba(235, 217, 179, 0.9); border: 1px solid rgba(123, 31, 45, 0.08); border-radius: 14px 14px 14px 4px; }
 .message-self { align-self: flex-end; color: #fff; background: linear-gradient(135deg, var(--primary), var(--primary-deep)); border-color: transparent; border-radius: 14px 14px 4px 14px; }
-.message small { display: block; margin-top: 4px; opacity: .7; font-size: 10px; text-align: right; }
-.chat-image { display: block; width: min(220px, 100%); max-height: 220px; object-fit: cover; margin-bottom: 6px; border-radius: 8px; }
-.chat-file { width: 34px; max-width: 34px; padding: 8px 0; color: transparent; }
-.chat-file::file-selector-button { width: 30px; height: 30px; padding: 0; color: transparent; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 50%; cursor: pointer; }
+.message-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.message small { display: block; opacity: .7; font-size: 10px; }
+.message-action { display: inline-grid; place-items: center; width: 24px; height: 24px; color: inherit; background: rgba(255,255,255,0.14); border-radius: 50%; }
+.chat-image { display: block; width: min(220px, 100%); max-height: 220px; object-fit: cover; margin-bottom: 6px; border-radius: 8px; cursor: pointer; }
+.chat-file { display: none; }
+.chat-attach { display: inline-grid; place-items: center; width: 38px; height: 38px; color: var(--primary); background: rgba(113, 9, 39, 0.08); border: 1px solid rgba(113, 9, 39, 0.1); border-radius: 50%; cursor: pointer; }
 .chat-profile-card { margin: 10px 0 6px; padding: 14px; border-radius: 14px; background: rgba(255,255,255,0.68); border: 1px solid var(--line); }
 .chat-profile-content { display: flex; align-items: center; gap: 12px; }
 .chat-profile-content .avatar { width: 52px; height: 52px; }
 .chat-profile-meta { display: grid; gap: 4px; }
 .chat-profile-meta small { color: var(--muted); }
-.chat-profile-actions { display: flex; justify-content: flex-end; margin-top: 12px; }
+.chat-profile-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
 .typing-indicator { color: var(--muted); padding: 4px; font-size: 12px; }
+.chat-media-modal { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(12, 15, 20, 0.72); }
+.chat-media-backdrop { position: relative; display: grid; place-items: center; max-width: min(90vw, 780px); max-height: min(88vh, 780px); padding: 12px; background: rgba(255,255,255,0.04); border-radius: 16px; }
+.chat-media-backdrop img { max-width: 100%; max-height: 80vh; border-radius: 12px; }
+.chat-media-close { position: absolute; top: 12px; right: 12px; }
 #chat-form { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 #chat-form textarea { height: 40px; resize: none; }
 #chat-form .btn { min-height: 40px; padding: 0 10px; }
