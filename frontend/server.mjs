@@ -4,7 +4,16 @@ import { fileURLToPath } from 'node:url';
 import { createServer } from 'node:http';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.ico': 'image/x-icon' };
+const types = {
+  '.html': 'text/html; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.webmanifest': 'application/manifest+json; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.js': 'application/javascript; charset=utf-8'
+};
 createServer((request, response) => {
   const pathname = new URL(request.url || '/', 'http://localhost').pathname;
   const requested = pathname === '/' ? '/index.html' : pathname;

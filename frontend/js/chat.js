@@ -29,6 +29,7 @@ const avatarType = (user, className = 'avatar') => {
 };
 const updateUnread = (value) => { unread = value; const badge = document.querySelector('#chat-unread'); if (badge) { badge.textContent = unread > 9 ? '9+' : String(unread); badge.hidden = unread === 0; } };
 const normalizeConversationId = (value) => String(value?._id || value || '');
+
 const createMediaModal = (src) => {
   const modal = document.querySelector('#chat-media-modal');
   if (modal) modal.remove();

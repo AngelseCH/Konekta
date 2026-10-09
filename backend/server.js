@@ -1,7 +1,5 @@
 import dns from 'node:dns';
-dns.setServers(['8.8.8.8', '8.8.4.4']); // Usa Google DNS o '1.1.1.1' (Cloudflare)
-
-// ... el resto de tus imports (express, mongoose, etc.)
+dns.setServers(['8.8.8.8', '8.8.4.4']); 
 import http from 'node:http';
 import app from './src/app.js';
 import { connectDatabase } from './src/config/db.js';

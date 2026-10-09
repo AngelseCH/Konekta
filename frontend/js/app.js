@@ -28,4 +28,9 @@ const renderProduct = async (id) => { const product = (await api.get(`/products/
 const renderDashboardView = async (admin) => { app.className = 'app-shell'; app.innerHTML = `${header()}<main class="main-content">${await renderDashboard(admin)}</main>`; bindSettings(); bindDashboard(() => renderDashboardView(admin)); };
 const renderRoute = async () => { const route = location.hash.replace(/^#\/?/, '') || (getState().user ? 'home' : 'login'); if (!getState().user && !['login', 'register'].includes(route)) { location.hash = '#/login'; return; } if (['login', 'register'].includes(route)) { authMode = route; renderAuth(); return; } try { if (route === 'home') await renderHome(); else if (route.startsWith('product/')) await renderProduct(route.split('/')[1]); else if (route === 'dashboard') { if (!['vendedor', 'admin'].includes(getState().user.role)) return renderHome(); await renderDashboardView(false); } else if (route === 'admin') { if (getState().user.role !== 'admin') return renderHome(); await renderDashboardView(true); } else await renderHome(); } catch (error) { showToast(error.message); await renderHome(); } };
 window.addEventListener('hashchange', renderRoute); window.addEventListener('auth:expired', () => { location.hash = '#/login'; showToast('Tu sesión expiró'); });
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
 await checkSession(); renderRoute();

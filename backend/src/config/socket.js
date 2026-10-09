@@ -34,6 +34,7 @@ const createSocketServer = (httpServer) => {
       if (isBuyer) conversation.unreadSeller += 1;
       else conversation.unreadBuyer += 1;
       await conversation.save();
+      
       const populated = await message.populate('sender', 'name avatar');
       io.to(`conversation:${conversationId}`).emit('message:new', populated);
     });

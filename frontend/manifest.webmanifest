@@ -1,0 +1,18 @@
+{
+  "name": "Konekta",
+  "short_name": "Konekta",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f1ea",
+  "theme_color": "#711027",
+  "description": "Marketplace de productos y servicios en un solo lugar.",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

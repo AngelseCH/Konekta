@@ -15,7 +15,11 @@ const env = {
   jwtSecret: process.env.JWT_SECRET || 'cambia-esta-clave-en-produccion',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   frontendUrl: frontendOrigins,
-  uploadDirectory: process.env.UPLOAD_DIR || resolve(currentDirectory, '../../uploads')
+  uploadDirectory: process.env.UPLOAD_DIR || resolve(currentDirectory, '../../uploads'),
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
+  cloudinaryFolder: process.env.CLOUDINARY_FOLDER || 'konekta'
 };
 
 export { env };
