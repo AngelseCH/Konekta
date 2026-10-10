@@ -23,6 +23,7 @@ app.use(helmet({
 		directives: {
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
 			'connect-src': ["'self'", 'ws:', 'wss:'],
+			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
 			'style-src': ["'self'", 'https://fonts.googleapis.com'],
 			'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:']
 		}
