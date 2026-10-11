@@ -1,7 +1,9 @@
 .app-shell { min-height: 100vh; background: linear-gradient(180deg, var(--canvas) 0%, #efe7da 100%); }
 .site-header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 28px; min-height: 68px; padding: 0 5vw; background: var(--header); border-bottom: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(14px); }
 .site-header .brand { margin: 0; color: #f9efe5; white-space: nowrap; }
-.site-header .brand-mark { background: linear-gradient(135deg, #f7e7cd 0%, #d5ae67 100%); color: var(--primary-deep); border: 1px solid rgba(255, 255, 255, 0.25); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 8px 18px rgba(0,0,0,0.10); }
+.site-header .brand-mark { width: 42px; height: 42px; border-radius: 12px; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 12px 18px rgba(0,0,0,0.10); overflow: hidden; }
+.site-header .brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.site-header .brand-word { color: #fff; }
 .header-search { flex: 1; max-width: 560px; margin: auto; }
 .header-search .input { height: 40px; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); color: #fff; }
 .header-search .input::placeholder { color: rgba(255,255,255,0.7); }
