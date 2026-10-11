@@ -1,5 +1,5 @@
 const { io } = window;
-import { SOCKET_URL, API_ORIGIN } from './config.js';
+import { SOCKET_URL, toAbsoluteUrl } from './config.js';
 import { api } from './api.js';
 import { getState } from './store.js';
 import { escapeHtml, icon, showToast } from './ui.js';
@@ -23,7 +23,7 @@ const toggleMuteUser = (userId) => {
 };
 const avatarType = (user, className = 'avatar') => {
   const name = user?.name || 'U';
-  const image = user?.avatar ? (user.avatar.startsWith('http') ? user.avatar : `${API_ORIGIN}${user.avatar}`) : '';
+  const image = user?.avatar ? toAbsoluteUrl(user.avatar, '') : '';
   if (!image) return `<div class="${className} profile-fallback">${escapeHtml(String(name).charAt(0).toUpperCase())}</div>`;
   return `<div class="${className}"><img src="${escapeHtml(image)}" alt="${escapeHtml(name)}"></div>`;
 };

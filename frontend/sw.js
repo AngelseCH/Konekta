@@ -1,9 +1,15 @@
-const CACHE_NAME = 'konekta-v3';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './css/reset.css', './css/variables.css', './css/base.css', './css/components.css', './css/pages/auth.css', './css/pages/app.css', './css/responsive.css', './assets/logo.svg'];
+const CACHE_NAME = 'konekta-pwa-v1';
+const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './css/reset.css', './css/variables.css', './css/base.css', './css/components.css', './css/pages/auth.css', './css/pages/app.css', './css/responsive.css', './assets/konekta.jpeg'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
   self.skipWaiting();
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('activate', (event) => {

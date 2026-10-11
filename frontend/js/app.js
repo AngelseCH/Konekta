@@ -6,19 +6,13 @@ import { imageFallback, loadCategories, loadProducts, productState, renderProduc
 import { bindReviews, loadReviews, reviewsSection } from './reviews.js';
 import { bindChat, initChat, openChat, renderChat } from './chat.js';
 import { bindDashboard, renderDashboard } from './dashboard.js';
-import { API_ORIGIN } from './config.js';
+import { toAbsoluteUrl } from './config.js';
 import { bindSettings } from './settings.js';
 
 const app = document.querySelector('#app');
 let authMode = 'login';
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
-const mediaUrl = (value) => {
-  if (!value || typeof value !== 'string') return './assets/placeholder.svg';
-  const cleaned = value.trim();
-  if (!cleaned) return './assets/placeholder.svg';
-  if (cleaned.startsWith('/uploads') || cleaned.startsWith('uploads/') || cleaned.includes('/uploads/')) return './assets/placeholder.svg';
-  return cleaned.startsWith('http') ? cleaned : `${API_ORIGIN}${cleaned}`;
-};
+const mediaUrl = (value) => toAbsoluteUrl(value, './assets/placeholder.svg');
 const field = (id, label, type = 'text', autocomplete = '') => `<div class="form-field"><label for="${id}">${label}</label><div class="${type === 'password' ? 'password-wrap' : ''}"><input class="input" id="${id}" name="${id}" type="${type}" ${autocomplete ? `autocomplete="${autocomplete}"` : ''} required></div><span class="field-error" data-error-for="${id}" aria-live="polite"></span></div>`;
 const passwordField = (id, label, autocomplete) => `<div class="form-field"><label for="${id}">${label}</label><div class="password-wrap"><input class="input" id="${id}" name="${id}" type="password" autocomplete="${autocomplete}" required><button class="password-toggle" type="button" data-password="${id}" aria-label="Mostrar contraseña">${icon('eye')}</button></div><span class="field-error" data-error-for="${id}" aria-live="polite"></span></div>`;
 const validateField = (input, form) => { let message = ''; if (input.id === 'name' && !/^[\p{L} ]{2,80}$/u.test(input.value.trim())) message = 'Escribe un nombre válido.'; if (input.id === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value.trim())) message = 'Introduce un correo válido.'; if (input.id === 'password' && !/(?=.*[A-Za-z])(?=.*\d).{6,}/.test(input.value)) message = 'Usa 6 caracteres, una letra y un número.'; if (input.id === 'passwordConfirmation' && input.value !== form.password.value) message = 'Las contraseñas no coinciden.'; if (input.name === 'terms' && !input.checked) message = 'Debes aceptar los términos.'; const error = document.querySelector(`[data-error-for="${input.id}"]`); input.classList.toggle('input-error', Boolean(message)); input.classList.toggle('input-success', !message && input.value.length > 0); if (error) error.textContent = message; return !message; };
@@ -38,7 +32,7 @@ window.addEventListener('hashchange', renderRoute); window.addEventListener('aut
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('./sw.js');
+      const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
       await registration.update();
     } catch (error) {
       console.warn('Service worker unavailable:', error.message);
