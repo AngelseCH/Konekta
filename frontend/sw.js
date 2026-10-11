@@ -1,4 +1,4 @@
-const CACHE_NAME = 'konekta-v2';
+const CACHE_NAME = 'konekta-v3';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest', './css/reset.css', './css/variables.css', './css/base.css', './css/components.css', './css/pages/auth.css', './css/pages/app.css', './css/responsive.css', './assets/logo.svg'];
 
 self.addEventListener('install', (event) => {
@@ -16,6 +16,14 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const requestUrl = new URL(event.request.url);
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
   if (requestUrl.origin !== self.location.origin || requestUrl.pathname.startsWith('/api/') || requestUrl.pathname.startsWith('/uploads/') || requestUrl.pathname.startsWith('/socket.io/')) return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
