@@ -6,9 +6,17 @@ import { escapeHtml, showToast } from './ui.js';
 export const productState = { products: [], categories: [], filters: { search: '', category: '', listingType: '', minPrice: '', maxPrice: '', sort: 'recent', page: 1 }, pagination: {} };
 export const loadCategories = async () => { const response = await api.get('/categories'); productState.categories = response.data; return productState.categories; };
 export const loadProducts = async () => { const params = new URLSearchParams(Object.entries(productState.filters).filter(([, value]) => value !== '')); const response = await api.get(`/products?${params}`); productState.products = response.data.products || []; productState.pagination = response.data.pagination || {}; return productState.products; };
-export const imageUrl = (image) => image ? (image.startsWith('http') ? image : `${API_ORIGIN}${image}`) : './assets/placeholder.svg';
+export const imageUrl = (image) => {
+  if (!image || typeof image !== 'string') return './assets/placeholder.svg';
+  const cleaned = image.trim();
+  if (!cleaned) return './assets/placeholder.svg';
+  if (cleaned.startsWith('/uploads') || cleaned.startsWith('uploads/') || cleaned.includes('/uploads/')) return './assets/placeholder.svg';
+  return cleaned.startsWith('http') ? cleaned : `${API_ORIGIN}${cleaned}`;
+};
 export const imageFallback = (event) => {
   const image = event.currentTarget;
+  if (image.dataset.fallbackApplied === 'true') return;
+  image.dataset.fallbackApplied = 'true';
   image.removeEventListener('error', imageFallback);
   image.src = './assets/placeholder.svg';
 };
