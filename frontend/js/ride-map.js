@@ -3,7 +3,7 @@ const mapCenter = [23.6345, -102.5528];
 const hasCoordinates = (point) => Number.isFinite(Number(point?.lat)) && Number.isFinite(Number(point?.lng)) && point?.lat !== '' && point?.lng !== '';
 const toCoordinates = (point) => [Number(point.lat), Number(point.lng)];
 
-export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
+export const mountRideMap = (element, { ride = {}, onPointSelected, onPointMoved } = {}) => {
   if (!element || !window.L) {
     if (element) element.textContent = 'El mapa no está disponible. Revisa tu conexión.';
     return null;
@@ -13,7 +13,7 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
   const origin = { ...(ride.origin || {}) };
   const destination = { ...(ride.destination || {}) };
   const startingPoint = hasCoordinates(origin) ? toCoordinates(origin) : hasCoordinates(destination) ? toCoordinates(destination) : mapCenter;
-  const map = leaflet.map(element, { scrollWheelZoom: false }).setView(startingPoint, hasCoordinates(origin) || hasCoordinates(destination) ? 12 : 5);
+  const map = leaflet.map(element, { scrollWheelZoom: false }).setView(startingPoint, hasCoordinates(origin) || hasCoordinates(destination) ? 12 : 11);
   leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
@@ -22,11 +22,14 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
   const markers = {};
   let routeLine;
   let routeRequest = 0;
+  let routeController;
+  let nextPoint = hasCoordinates(origin) ? 'destination' : 'origin';
   const status = element.parentElement?.querySelector('[data-route-status]');
 
   const setStatus = (message) => { if (status) status.textContent = message; };
   const updateRoute = async () => {
     const requestId = ++routeRequest;
+    routeController?.abort();
     routeLine?.remove();
     if (!hasCoordinates(origin) || !hasCoordinates(destination)) {
       setStatus(onPointSelected ? 'Marca salida y destino en el mapa.' : 'Ruta del viaje');
@@ -37,8 +40,9 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
     map.fitBounds(bounds.pad(0.18), { maxZoom: 14 });
     setStatus('Calculando ruta…');
     try {
+      routeController = new AbortController();
       const path = `${origin.lng},${origin.lat};${destination.lng},${destination.lat}`;
-      const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${path}?overview=full&geometries=geojson`);
+      const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${path}?overview=full&geometries=geojson`, { signal: routeController.signal });
       const result = await response.json();
       if (requestId !== routeRequest) return;
       if (!response.ok || result.code !== 'Ok' || !result.routes?.[0]) throw new Error('No se encontró una ruta para esos puntos.');
@@ -54,20 +58,39 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
   const setPoint = (kind, point) => {
     Object.assign(kind === 'origin' ? origin : destination, point);
     const coordinates = toCoordinates(point);
-    const color = kind === 'origin' ? '#38765e' : '#a34655';
     markers[kind]?.remove();
-    markers[kind] = leaflet.circleMarker(coordinates, { radius: 9, color: '#fff', weight: 3, fillColor: color, fillOpacity: 1 }).addTo(map);
+    const label = kind === 'origin' ? 'A' : 'B';
+    const title = kind === 'origin' ? 'Salida' : 'Destino';
+    const icon = leaflet.divIcon({
+      className: 'ride-pin-wrap',
+      html: `<span class="ride-pin ride-pin-${kind}"><span>${label}</span></span>`,
+      iconSize: [36, 44],
+      iconAnchor: [18, 40]
+    });
+    markers[kind] = leaflet.marker(coordinates, { icon, draggable: Boolean(onPointSelected), bubblingMouseEvents: false }).addTo(map);
+    markers[kind].bindTooltip(title, { direction: 'top', offset: [0, -34] });
+    markers[kind].on('dragend', (event) => {
+      const moved = event.target.getLatLng();
+      Object.assign(kind === 'origin' ? origin : destination, moved);
+      onPointMoved?.(kind, moved);
+      updateRoute();
+    });
     updateRoute();
   };
 
   if (hasCoordinates(origin)) setPoint('origin', origin);
   if (hasCoordinates(destination)) setPoint('destination', destination);
-  if (onPointSelected) map.on('click', (event) => onPointSelected(event.latlng, setPoint));
+  if (onPointSelected) map.on('click', (event) => {
+    const kind = nextPoint;
+    onPointSelected(event.latlng, setPoint, kind);
+    nextPoint = kind === 'origin' ? 'destination' : 'origin';
+  });
   window.requestAnimationFrame(() => map.invalidateSize());
 
   return {
     map,
     setPoint,
+    selectNextPoint: (kind) => { nextPoint = kind; },
     invalidateSize: () => map.invalidateSize(),
     centerOnUser: () => {
       if (!navigator.geolocation) {

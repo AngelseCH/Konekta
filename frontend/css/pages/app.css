@@ -189,6 +189,14 @@
 .ride-point-fields .btn { width: 100%; min-height: 38px; }
 .ride-point-fields .btn.is-active { color: #fff; background: var(--primary); }
 .ride-map { min-height: 240px; height: 320px; overflow: hidden; background: #e7ece8; border: 1px solid var(--line); border-radius: var(--radius-sm); z-index: 0; }
+.ride-pin-wrap { background: transparent; border: 0; }
+.ride-pin { display: grid; place-items: center; width: 34px; height: 34px; color: #fff; border: 3px solid #fff; border-radius: 50% 50% 50% 4px; box-shadow: 0 2px 8px rgba(25, 35, 30, .38); font-size: 13px; font-weight: 700; transform: rotate(-45deg); }
+.ride-pin > span { transform: rotate(45deg); }
+.ride-pin-origin { background: #38765e; }
+.ride-pin-destination { background: #a34655; }
+.ride-map .leaflet-marker-icon { cursor: grab; }
+.ride-map .leaflet-marker-icon:active { cursor: grabbing; }
+.ride-map .leaflet-control-attribution { font-size: 10px; }
 .ride-detail-map { height: 300px; }
 .ride-summary { display: grid; gap: 12px; margin-top: 20px; }
 .ride-route-points { display: grid; gap: 8px; }
