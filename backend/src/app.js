@@ -17,6 +17,9 @@ import { notFound, errorHandler } from './middlewares/error.js';
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Render forwards client requests through its proxy and sets X-Forwarded-For.
+// Trust the single proxy hop so express-rate-limit can identify the client IP.
+app.set('trust proxy', 1);
 app.use(helmet({
 	crossOriginResourcePolicy: { policy: 'cross-origin' },
 	referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
