@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true, minlength: 6, select: false },
   role: { type: String, enum: ['admin', 'vendedor', 'consumidor'], default: 'consumidor' },
   avatar: { type: String, default: null },
-  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }]
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+  passwordResetToken: { type: String, default: null },
+  passwordResetExpires: { type: Date, default: null }
 }, { timestamps: true });
 
 userSchema.pre('save', async function hashPassword(next) {

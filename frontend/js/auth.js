@@ -7,6 +7,16 @@ export const login = async (email, password) => {
   return response.data.user;
 };
 
+export const requestPasswordReset = async (email) => {
+  const response = await api.post('/auth/forgot-password', { email });
+  return response.data;
+};
+
+export const resetPassword = async ({ email, token, password, passwordConfirmation }) => {
+  const response = await api.post('/auth/reset-password', { email, token, password, passwordConfirmation });
+  return response.data;
+};
+
 export const register = async ({ name, email, password, passwordConfirmation, role }) => {
   const response = await api.post('/auth/register', { name, email, password, passwordConfirmation, role });
   setSession(response.data);

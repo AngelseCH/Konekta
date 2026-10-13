@@ -5,5 +5,7 @@ const passwordRule = body('password').isLength({ min: 6 }).withMessage('La contr
 
 const registerRules = [nameRule, body('email').trim().isEmail().withMessage('Email inválido').normalizeEmail(), passwordRule, body('passwordConfirmation').custom((value, { req }) => value === req.body.password).withMessage('Las contraseñas no coinciden'), body('role').optional().isIn(['consumidor', 'vendedor']).withMessage('Rol inválido')];
 const loginRules = [body('email').trim().isEmail().withMessage('Email inválido').normalizeEmail(), body('password').notEmpty().withMessage('La contraseña es obligatoria')];
+const forgotPasswordRules = [body('email').trim().isEmail().withMessage('Email inválido').normalizeEmail()];
+const resetPasswordRules = [body('email').trim().isEmail().withMessage('Email inválido').normalizeEmail(), body('token').trim().notEmpty().withMessage('El token de recuperación es obligatorio'), passwordRule, body('passwordConfirmation').custom((value, { req }) => value === req.body.password).withMessage('Las contraseñas no coinciden')];
 
-export { registerRules, loginRules };
+export { registerRules, loginRules, forgotPasswordRules, resetPasswordRules };
