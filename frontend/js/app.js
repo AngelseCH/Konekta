@@ -43,9 +43,17 @@ const renderDashboardView = async (admin) => { app.className = 'app-shell'; app.
 const renderRoute = async () => { const route = location.hash.replace(/^#\/?/, '') || (getState().user ? 'home' : 'login'); if (!getState().user && !['login', 'register'].includes(route)) { location.hash = '#/login'; return; } if (['login', 'register'].includes(route)) { authMode = route; renderAuth(); return; } try { if (route === 'home') await renderHome(); else if (route.startsWith('product/')) await renderProduct(route.split('/')[1]); else if (route === 'dashboard') { if (!['vendedor', 'admin'].includes(getState().user.role)) return renderHome(); await renderDashboardView(false); } else if (route === 'admin') { if (getState().user.role !== 'admin') return renderHome(); await renderDashboardView(true); } else await renderHome(); } catch (error) { showToast(error.message); await renderHome(); } };
 window.addEventListener('hashchange', renderRoute); window.addEventListener('auth:expired', () => { location.hash = '#/login'; showToast('Tu sesión expiró'); });
 if ('serviceWorker' in navigator) {
+  let refreshingAfterWorkerUpdate = false;
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshingAfterWorkerUpdate) return;
+      refreshingAfterWorkerUpdate = true;
+      window.location.reload();
+    });
+  }
   window.addEventListener('load', async () => {
     try {
-      const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+      const registration = await navigator.serviceWorker.register('./sw.js', { scope: './', updateViaCache: 'none' });
       await registration.update();
     } catch (error) {
       console.warn('Service worker unavailable:', error.message);
