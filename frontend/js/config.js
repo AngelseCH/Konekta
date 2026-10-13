@@ -4,7 +4,7 @@ export const toAbsoluteUrl = (value, fallback = './assets/placeholder.svg') => {
   if (!value || typeof value !== 'string') return fallback;
   const cleaned = value.trim();
   if (!cleaned) return fallback;
-  if (cleaned.startsWith('/uploads') || cleaned.startsWith('uploads/') || cleaned.includes('/uploads/')) return fallback;
+  if (cleaned.startsWith('/uploads/') || cleaned.startsWith('uploads/')) return new URL(cleaned.startsWith('/') ? cleaned : `/${cleaned}`, API_ORIGIN).toString();
   if (cleaned.startsWith('http')) return cleaned;
   if (cleaned.startsWith('./') || cleaned.startsWith('../') || cleaned.startsWith('/')) return new URL(cleaned, window.location.origin).toString();
   return new URL(`/${cleaned.replace(/^\.?\//, '')}`, window.location.origin).toString();

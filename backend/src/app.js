@@ -19,12 +19,13 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.use(helmet({
 	crossOriginResourcePolicy: { policy: 'cross-origin' },
+	referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 	contentSecurityPolicy: {
 		directives: {
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
 			'script-src': ["'self'", 'https://unpkg.com'],
 			'connect-src': ["'self'", 'ws:', 'wss:', 'https://router.project-osrm.org', 'https://unpkg.com'],
-			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com', 'https://*.tile.openstreetmap.org'],
+			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com', 'https://tile.openstreetmap.org'],
 			'style-src': ["'self'", 'https://fonts.googleapis.com', 'https://unpkg.com'],
 			'style-src-attr': ["'unsafe-inline'"],
 			'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:']

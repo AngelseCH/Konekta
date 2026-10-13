@@ -15,9 +15,51 @@ const productForm = (categories, product = null) => {
   return `<form class="product-form card" id="product-form" data-product-id="${product?._id || ''}" hidden><div class="section-heading"><div><p class="eyebrow">${product ? 'Editar publicacion' : 'Publicar en Konekta'}</p><h2>${product ? 'Actualiza tu publicacion' : 'Nueva publicacion'}</h2></div><button class="btn btn-ghost" id="cancel-product" type="button">Cancelar</button></div><div class="form-grid"><label class="form-field"><span>Tipo</span><select class="input" name="listingType" required><option value="product" ${product?.listingType !== 'service' ? 'selected' : ''}>Producto</option><option value="service" ${product?.listingType === 'service' ? 'selected' : ''}>Servicio</option></select></label><label class="form-field"><span>Estado</span><select class="input" name="isActive"><option value="true" ${product?.isActive !== false ? 'selected' : ''}>Activo y visible</option><option value="false" ${product?.isActive === false ? 'selected' : ''}>Pausado</option></select></label><label class="form-field"><span>Nombre</span><input class="input" name="name" value="${value(product, 'name')}" required minlength="2" maxlength="120"></label><label class="form-field"><span>Empresa o proveedor</span><input class="input" name="company" value="${value(product, 'company')}" required></label><label class="form-field"><span>Categoria</span><select class="input" id="product-category" name="category" required>${options}<option value="__new__">+ Agregar otra categoria</option></select><input class="input category-custom-input" id="product-category-custom" name="categoryCustom" placeholder="Escribe la nueva categoria" hidden></label><label class="form-field"><span data-price-label>Precio</span><input class="input" name="price" type="number" min="0" step="0.01" value="${value(product, 'price')}" required></label><label class="form-field"><span>Telefono de contacto</span><input class="input" name="contactPhone" value="${value(product, 'contactPhone')}" placeholder="Opcional"></label><label class="form-field form-field-wide standard-location-field"><span>Direccion del servicio o punto de atencion</span><input class="input" name="location.address" value="${value(product?.location, 'address')}" placeholder="Calle, colonia, ciudad"></label><label class="form-field standard-location-field"><span>Latitud</span><input class="input" name="location.lat" type="number" step="any" value="${product?.location?.lat ?? ''}"></label><label class="form-field standard-location-field"><span>Longitud</span><input class="input" name="location.lng" type="number" step="any" value="${product?.location?.lng ?? ''}"></label><label class="form-field form-field-wide"><span>Imagenes (maximo 5)</span><div class="image-upload-dropzone"><input class="input" id="product-image" name="images" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple><span class="upload-dropzone-label">Arrastra o selecciona fotos</span></div><small class="field-hint">Opcional. En edicion reemplaza las imagenes.</small></label></div>${rideFields}<fieldset class="schedule-fieldset standard-schedule"><legend>Horario de servicio o atencion</legend><div class="schedule-grid">${scheduleFields}</div></fieldset><div id="image-preview" class="image-preview"></div><label class="form-field"><span>Descripcion</span><textarea class="input" name="desc" minlength="2" required>${value(product, 'desc')}</textarea></label><button class="btn btn-primary" id="save-product" type="submit">${product ? 'Guardar cambios' : 'Publicar'}</button></form>`;
 };
 
-export const renderDashboard = async (admin = false) => { const stats = (await api.get(`/stats/${admin ? 'admin' : 'seller'}`)).data; const products = admin ? [] : (await api.get('/products/mine')).data; const categories = (await api.get('/categories')).data; const content = admin ? '<div class="card"><h2>Moderacion</h2><p class="muted">Gestiona publicaciones y usuarios desde este panel.</p></div>' : `<div class="card"><div class="table-heading"><h2>Mis publicaciones</h2><button class="btn btn-primary" id="new-product" type="button">+ Nueva publicacion</button></div>${productForm(categories)}<div class="product-table">${products.map((product) => `<div class="table-row ${product.isActive === false ? 'is-paused' : ''}"><strong>${escapeHtml(product.name)}</strong><span>${escapeHtml(product.category)}</span><span>${product.isActive === false ? 'Pausado' : 'Activo'}</span><span>$${product.price}</span><button class="btn btn-ghost edit-product" data-product-id="${product._id}">Editar</button><button class="btn btn-ghost delete-product" data-product-id="${product._id}">Eliminar</button></div>`).join('')}</div></div>`; return `<section class="dashboard-page"><div class="page-heading"><p class="eyebrow">${admin ? 'Administracion' : 'Workspace'}</p><h1>${admin ? 'Panel admin' : 'Panel de empresa'}</h1></div><div class="metrics">${Object.entries(stats).map(([key, item]) => `<div class="metric-card"><span>${key}</span><strong>${item}</strong></div>`).join('')}</div>${content}</section>`; };
+export const renderDashboard = async (admin = false) => {
+  const stats = (await api.get(`/stats/${admin ? 'admin' : 'seller'}`)).data;
+  const products = (await api.get('/products/mine')).data;
+  const categories = admin ? [] : (await api.get('/categories')).data;
+  let content;
+  if (admin) {
+    const users = (await api.get('/users')).data;
+    const currentUser = JSON.parse(localStorage.getItem('konekta_user') || 'null');
+    const currentUserId = String(currentUser?.id || currentUser?._id || '');
+    content = `<section class="card admin-moderation"><h2>Publicaciones</h2><p class="muted">Pausa o elimina publicaciones que incumplan las reglas.</p><div class="product-table">${products.length ? products.map((product) => `<div class="table-row admin-product-row ${product.isActive === false ? 'is-paused' : ''}"><strong>${escapeHtml(product.name)}</strong><span>${escapeHtml(product.owner?.name || 'Vendedor')}</span><span>${escapeHtml(product.category)}</span><span>${product.isActive === false ? 'Pausada' : 'Activa'}</span><button class="btn btn-secondary" type="button" data-admin-toggle="${product._id}" data-active="${product.isActive !== false}">${product.isActive === false ? 'Activar' : 'Pausar'}</button><button class="btn btn-ghost" type="button" data-admin-delete="${product._id}">Eliminar</button></div>`).join('') : '<p class="muted">No hay publicaciones.</p>'}</div></section><section class="card admin-moderation"><h2>Usuarios</h2><div class="product-table">${users.length ? users.map((user) => `<div class="table-row admin-user-row"><strong>${escapeHtml(user.name)}</strong><span>${escapeHtml(user.email)}</span><span>${escapeHtml(user.role)}</span>${String(user._id) === currentUserId ? '<span>Tu cuenta</span>' : `<label class="form-field"><span class="sr-only">Rol de ${escapeHtml(user.name)}</span><select class="input" data-admin-role="${user._id}" aria-label="Cambiar rol de ${escapeHtml(user.name)}"><option value="consumidor" ${user.role === 'consumidor' ? 'selected' : ''}>Consumidor</option><option value="vendedor" ${user.role === 'vendedor' ? 'selected' : ''}>Vendedor</option><option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option></select></label>`}</div>`).join('') : '<p class="muted">No hay usuarios.</p>'}</div></section>`;
+  } else {
+    content = `<div class="card"><div class="table-heading"><h2>Mis publicaciones</h2><button class="btn btn-primary" id="new-product" type="button">+ Nueva publicacion</button></div>${productForm(categories)}<div class="product-table">${products.map((product) => `<div class="table-row ${product.isActive === false ? 'is-paused' : ''}"><strong>${escapeHtml(product.name)}</strong><span>${escapeHtml(product.category)}</span><span>${product.isActive === false ? 'Pausado' : 'Activo'}</span><span>$${product.price}</span><button class="btn btn-ghost edit-product" data-product-id="${product._id}">Editar</button><button class="btn btn-ghost delete-product" data-product-id="${product._id}">Eliminar</button></div>`).join('')}</div></div>`;
+  }
+  return `<section class="dashboard-page"><div class="page-heading"><p class="eyebrow">${admin ? 'Administracion' : 'Workspace'}</p><h1>${admin ? 'Panel admin' : 'Panel de empresa'}</h1></div><div class="metrics">${Object.entries(stats).map(([key, item]) => `<div class="metric-card"><span>${escapeHtml(key)}</span><strong>${item}</strong></div>`).join('')}</div>${content}</section>`;
+};
 
-export const bindDashboard = (onRefresh) => {
+export const bindDashboard = (onRefresh, admin = false) => {
+  if (admin) {
+    document.querySelectorAll('[data-admin-toggle]').forEach((button) => button.addEventListener('click', async () => {
+      button.disabled = true;
+      try {
+        await api.patch(`/products/${button.dataset.adminToggle}/status`, { isActive: button.dataset.active !== 'true' });
+        showToast('Estado de publicación actualizado', 'success');
+        await onRefresh();
+      } catch (error) { button.disabled = false; showToast(error.message); }
+    }));
+    document.querySelectorAll('[data-admin-delete]').forEach((button) => button.addEventListener('click', async () => {
+      if (!confirm('¿Eliminar esta publicación de forma permanente?')) return;
+      button.disabled = true;
+      try {
+        await api.delete(`/products/${button.dataset.adminDelete}`);
+        showToast('Publicación eliminada', 'success');
+        await onRefresh();
+      } catch (error) { button.disabled = false; showToast(error.message); }
+    }));
+    document.querySelectorAll('[data-admin-role]').forEach((select) => select.addEventListener('change', async () => {
+      select.disabled = true;
+      try {
+        await api.put(`/users/${select.dataset.adminRole}`, { role: select.value });
+        showToast('Rol actualizado', 'success');
+      } catch (error) { showToast(error.message); await onRefresh(); }
+      finally { select.disabled = false; }
+    }));
+    return;
+  }
   let form = document.querySelector('#product-form');
   const bindForm = (current) => {
     let routeMap;

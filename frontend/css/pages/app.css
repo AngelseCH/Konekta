@@ -158,6 +158,10 @@
 .schedule-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .form-field-wide { grid-column: 1 / -1; }
 .table-row.is-paused { opacity: .62; }
+.admin-moderation + .admin-moderation { margin-top: 18px; }
+.admin-product-row { grid-template-columns: 1.3fr 1fr 1fr .8fr auto auto; }
+.admin-user-row { grid-template-columns: 1fr 1.3fr .8fr 1fr; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .field-hint { color: var(--muted); font-size: 12px; }
 .image-upload-dropzone { position: relative; display: grid; gap: 8px; padding: 18px 16px; border: 1.5px dashed rgba(113, 9, 39, 0.35); background: linear-gradient(135deg, rgba(113, 9, 39, 0.04), rgba(49, 46, 129, 0.04)); border-radius: var(--radius-md); transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
 .image-upload-dropzone:hover { border-color: var(--primary); box-shadow: 0 10px 24px rgba(113, 9, 39, 0.08); }

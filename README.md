@@ -6,7 +6,7 @@ Marketplace de productos y servicios con SPA vanilla, autenticación JWT, produc
 
 ```bash
 npm install
-copy backend\\.env.example backend\\.env
+copy .env.example .env
 npm run dev
 ```
 
@@ -34,6 +34,7 @@ El backend sirve también el frontend desde `http://localhost:4000`, por lo que 
 | GET | `/api/products/:id` | Público |
 | GET | `/api/products/mine` | Vendedor/admin |
 | POST/PUT/DELETE | `/api/products` | Vendedor/admin / dueño |
+| PATCH | `/api/products/:id/status` | Admin |
 | GET/POST | `/api/products/:id/reviews` | Público / autenticado |
 | DELETE | `/api/products/:id/reviews/:reviewId` | Autor/admin |
 | GET/POST | `/api/chat/conversations` | Autenticado |
@@ -51,7 +52,7 @@ Usuarios seed: `admin@demo.com / Admin123`, `vendedor@demo.com / Vendedor123`, `
 
 ## Variables
 
-`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`, `RESEND_API_KEY` y `MAIL_FROM` se documentan en `backend/.env.example`.
+`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`, `CLOUDINARY_*`, `RESEND_API_KEY` y `MAIL_FROM` se documentan en `.env.example`, en la raíz. MongoDB debe estar disponible para iniciar el backend.
 
 ## Frontend
 
@@ -65,17 +66,18 @@ La SPA usa `konekta_token` y `konekta_user` en `localStorage`, consume la API co
 
 ## Despliegue en Render
 
-El archivo `render.yaml` configura un servicio Node que sirve el frontend, la API y Socket.IO desde el mismo dominio. Las imágenes subidas se guardan en un disco persistente de Render.
+El archivo `render.yaml` configura un servicio Node que sirve el frontend, la API y Socket.IO desde el mismo dominio. Para subir imágenes en producción, configura las tres credenciales `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` y `CLOUDINARY_API_SECRET`; el servicio rechaza las subidas si Cloudinary no está configurado. El plan gratuito de Render no conserva archivos locales entre despliegues.
 
 1. Crea una base de datos MongoDB Atlas y agrega `0.0.0.0/0` en Network Access para permitir conexiones desde Render. Usa una contraseña de base de datos fuerte en la URI.
 2. En Render, selecciona **New > Blueprint**, conecta `AngelseCH/Konekta` y confirma el servicio descrito por `render.yaml`.
 3. En el Environment del servicio, configura `MONGO_URI` con la URI de Atlas. Render genera `JWT_SECRET` automáticamente.
-4. Para habilitar recuperación por correo, crea una API key en Resend y verifica el dominio remitente. Configura `RESEND_API_KEY` con la clave y `MAIL_FROM` con un remitente del dominio verificado (por ejemplo, `Konekta <cuentas@tudominio.com>`). No uses `onboarding@resend.dev` para usuarios reales.
-5. Confirma el deploy y abre la URL del servicio. `/health` debe responder con `status: up`. El flujo de recuperación devuelve un código que Resend envía al correo de la cuenta.
+4. Configura las credenciales de Cloudinary para permitir que los usuarios suban imágenes.
+5. Para habilitar recuperación por correo, crea una API key en Resend y verifica el dominio remitente. Configura `RESEND_API_KEY` con la clave y `MAIL_FROM` con un remitente del dominio verificado (por ejemplo, `Konekta <cuentas@tudominio.com>`). No uses `onboarding@resend.dev` para usuarios reales.
+6. Confirma el deploy y abre la URL del servicio. `/health` debe responder con `status: up`. El flujo de recuperación devuelve un código que Resend envía al correo de la cuenta.
 
 Los viajes compartidos se publican como servicios en la categoría **Viajes compartidos**. El mapa usa Leaflet, OpenStreetMap y OSRM; no requiere claves adicionales.
 
-No uses el URI local de MongoDB (`mongodb://127.0.0.1...`) en Render. El disco persistente necesita un plan de Render que admita discos; si cambias el servicio a un plan sin disco, las imágenes cargadas se perderán al reiniciar o desplegar. Para dominios personalizados, agrega sus orígenes separados por comas en `FRONTEND_URL` para autorizar CORS y Socket.IO.
+No uses el URI local de MongoDB (`mongodb://127.0.0.1...`) en Render. Para dominios personalizados, agrega sus orígenes separados por comas en `FRONTEND_URL` para autorizar CORS y Socket.IO.
 
 ## Diagnóstico de MongoDB Atlas
 
