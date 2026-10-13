@@ -42,10 +42,12 @@ const createMediaModal = (src) => {
   wrapper.addEventListener('click', (event) => { if (event.target === wrapper) wrapper.remove(); });
 };
 const bindInteractiveMessageActions = () => {
-  document.querySelectorAll('.chat-image').forEach((image) => {
+  document.querySelectorAll('.chat-image:not([data-chat-bound])').forEach((image) => {
+    image.dataset.chatBound = 'true';
     image.addEventListener('click', () => createMediaModal(image.src));
   });
-  document.querySelectorAll('[data-delete-message]').forEach((button) => {
+  document.querySelectorAll('[data-delete-message]:not([data-chat-bound])').forEach((button) => {
+    button.dataset.chatBound = 'true';
     button.addEventListener('click', async (event) => {
       event.stopPropagation();
       const messageId = button.dataset.deleteMessage;
@@ -66,6 +68,13 @@ const messageBubble = (message) => {
   const textMarkup = message.text ? `<span>${escapeHtml(message.text)}</span>` : '';
   const deleteButton = mine ? `<button class="message-action" type="button" data-delete-message="${message._id}" aria-label="Eliminar mensaje">${icon('trash')}</button>` : '';
   return `<div class="message ${mine ? 'message-self' : ''}" data-message-id="${message._id}">${imageMarkup}${textMarkup}<div class="message-meta"><small>${new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>${deleteButton}</div></div>`;
+};
+const appendMessage = (message) => {
+  const box = document.querySelector('#chat-messages');
+  if (!box || !message?._id || box.querySelector(`[data-message-id="${message._id}"]`)) return;
+  box.insertAdjacentHTML('beforeend', messageBubble(message));
+  bindInteractiveMessageActions();
+  scrollMessages();
 };
 const scrollMessages = () => { const box = document.querySelector('#chat-messages'); if (box) box.scrollTop = box.scrollHeight; };
 const contactFor = (conversation) => { const userId = String(getState().user?.id || getState().user?._id); const contact = String(conversation.seller?._id) === userId ? conversation.buyer : conversation.seller; return { id: contact?._id || null, name: contact?.name || 'Contacto', company: conversation.product?.company || 'Empresa no indicada', avatar: contact?.avatar || null, role: contact?.role || 'Usuario', isOnline: true }; };
@@ -92,21 +101,10 @@ const updateContactHeader = (conversation) => {
 };
 export const initChat = () => { if (socket || !getState().token) return; socket = io(SOCKET_URL, { auth: { token: getState().token } }); socket.on('connect', () => { if (activeConversation?._id) socket.emit('conversation:join', { conversationId: activeConversation._id }); }); socket.on('connect_error', () => { if (notificationsEnabled()) showToast('No se pudo conectar el chat. Revisa tu conexión.'); }); socket.on('message:new', (message) => { const senderId = String(message.sender?._id || message.sender || ''); const mine = senderId === String(getState().user?.id || getState().user?._id || ''); const conversationId = normalizeConversationId(message.conversation);
     if (activeConversation && normalizeConversationId(activeConversation._id) === conversationId) {
-      const existing = document.querySelector(`#chat-messages [data-message-id="${message._id}"]`);
-      if (!existing) document.querySelector('#chat-messages')?.insertAdjacentHTML('beforeend', messageBubble(message));
-      bindInteractiveMessageActions();
-      scrollMessages();
+      appendMessage(message);
     } else if (!mine) {
       updateUnread(unread + 1);
       if (notificationsEnabled()) showToast('Tienes un mensaje nuevo', 'info');
-    }
-    if (mine) {
-      const existing = document.querySelector(`#chat-messages [data-message-id="${message._id}"]`);
-      if (activeConversation && normalizeConversationId(activeConversation._id) === conversationId && !existing) {
-        document.querySelector('#chat-messages')?.insertAdjacentHTML('beforeend', messageBubble(message));
-        bindInteractiveMessageActions();
-        scrollMessages();
-      }
     }
     loadConversations();
   }); socket.on('message:deleted', ({ messageId, conversationId }) => { if (activeConversation && normalizeConversationId(activeConversation._id) === normalizeConversationId(conversationId)) { document.querySelector(`[data-message-id="${messageId}"]`)?.remove(); } loadConversations(); }); };
@@ -116,4 +114,6 @@ export const renderChat = () => `<button class="chat-fab" id="chat-fab" aria-lab
 const loadConversations = async () => { try { const conversations = (await api.get('/chat/conversations')).data; const list = document.querySelector('#chat-list'); if (list) list.innerHTML = conversations.length ? conversations.map((conversation) => { const contact = contactFor(conversation); return `<button class="conversation-item" data-conversation="${conversation._id}">${avatarType(contact, 'avatar mini-avatar')}<span class="conversation-body"><strong>${escapeHtml(contact.name)}</strong><span>${escapeHtml(contact.company)}</span><small>${escapeHtml(conversation.product?.name || 'Conversación')} · ${escapeHtml(conversation.lastMessage?.text || 'Sin mensajes')}</small></span></button>`; }).join('') : '<p class="muted">No tienes conversaciones.</p>'; document.querySelectorAll('[data-conversation]').forEach((button) => button.addEventListener('click', () => openConversation(button.dataset.conversation))); } catch (error) { showToast(`No se pudieron cargar los mensajes: ${error.message}`); } };
 const openConversation = async (id) => { try { const data = (await api.get(`/chat/conversations/${id}`)).data; activeConversation = data.conversation; updateContactHeader(activeConversation); if (socket?.connected) socket.emit('conversation:join', { conversationId: id }); document.querySelector('#chat-list').hidden = true; document.querySelector('#chat-conversation').hidden = false; document.querySelector('#chat-messages').innerHTML = data.messages.map(messageBubble).join(''); bindInteractiveMessageActions(); scrollMessages(); document.querySelector('#chat-profile-card')?.setAttribute('hidden', 'hidden'); } catch (error) { activeConversation = null; showToast(`No se pudo abrir la conversación: ${error.message}`); await loadConversations(); } };
 export const openChat = async (productId) => { try { initChat(); const response = await api.post('/chat/conversations', { productId }); openPanel(); await openConversation(response.data._id); } catch (error) { showToast(error.message); } };
-export const bindChat = async () => { document.querySelector('#chat-fab')?.addEventListener('click', async () => { initChat(); updateUnread(0); openPanel(); await loadConversations(); }); document.querySelector('#chat-close')?.addEventListener('click', closePanel); document.querySelector('#back-chat')?.addEventListener('click', () => { activeConversation = null; document.querySelector('#chat-conversation').hidden = true; document.querySelector('#chat-list').hidden = false; }); document.querySelector('#chat-contact-button')?.addEventListener('click', () => { const card = document.querySelector('#chat-profile-card'); if (!activeConversation) return; if (!card) return; card.hidden = !card.hidden; if (!card.hidden) { populateProfileCard(activeConversation); } }); document.querySelector('#delete-conversation')?.addEventListener('click', async () => { if (!activeConversation?._id || !confirm('¿Eliminar esta conversación?')) return; try { await api.delete(`/chat/conversations/${activeConversation._id}`); activeConversation = null; document.querySelector('#chat-conversation').hidden = true; document.querySelector('#chat-list').hidden = false; await loadConversations(); showToast('Conversación eliminada', 'success'); } catch (error) { showToast(`No se pudo eliminar: ${error.message}`); } }); document.querySelector('#chat-form')?.addEventListener('submit', async (event) => { event.preventDefault(); const form = event.currentTarget; const text = new FormData(form).get('text')?.trim(); const file = form.querySelector('#chat-image')?.files?.[0]; if ((!text && !file) || !activeConversation?._id) return; const button = form.querySelector('button[type="submit"]'); button.disabled = true; try { if (file || !socket?.connected) { const data = new FormData(form); const response = await api.upload(`/chat/conversations/${activeConversation._id}/messages`, data); document.querySelector('#chat-messages')?.insertAdjacentHTML('beforeend', messageBubble(response.data)); bindInteractiveMessageActions(); scrollMessages(); } else { socket.emit('message:send', { conversationId: activeConversation._id, text }); } form.reset(); } catch (error) { showToast(`No se pudo enviar: ${error.message}`); } finally { button.disabled = false; } }); await loadConversations(); };
+export const bindChat = async () => { document.querySelector('#chat-fab')?.addEventListener('click', async () => { initChat(); updateUnread(0); openPanel(); await loadConversations(); }); document.querySelector('#chat-close')?.addEventListener('click', closePanel); document.querySelector('#back-chat')?.addEventListener('click', () => { activeConversation = null; document.querySelector('#chat-conversation').hidden = true; document.querySelector('#chat-list').hidden = false; }); document.querySelector('#chat-contact-button')?.addEventListener('click', () => { const card = document.querySelector('#chat-profile-card'); if (!activeConversation) return; if (!card) return; card.hidden = !card.hidden; if (!card.hidden) { populateProfileCard(activeConversation); } }); document.querySelector('#delete-conversation')?.addEventListener('click', async () => { if (!activeConversation?._id || !confirm('¿Eliminar esta conversación?')) return; try { await api.delete(`/chat/conversations/${activeConversation._id}`); activeConversation = null; document.querySelector('#chat-conversation').hidden = true; document.querySelector('#chat-list').hidden = false; await loadConversations(); showToast('Conversación eliminada', 'success'); } catch (error) { showToast(`No se pudo eliminar: ${error.message}`); } }); document.querySelector('#chat-form')?.addEventListener('submit', async (event) => { event.preventDefault(); const form = event.currentTarget; const text = new FormData(form).get('text')?.trim(); const file = form.querySelector('#chat-image')?.files?.[0]; if ((!text && !file) || !activeConversation?._id) return; const button = form.querySelector('button[type="submit"]'); button.disabled = true; try { if (file || !socket?.connected) { const data = new FormData(form); const response = await api.upload(`/chat/conversations/${activeConversation._id}/messages`, data);
+      appendMessage(response.data);
+    } else { socket.emit('message:send', { conversationId: activeConversation._id, text }); } form.reset(); } catch (error) { showToast(`No se pudo enviar: ${error.message}`); } finally { button.disabled = false; } }); await loadConversations(); };
