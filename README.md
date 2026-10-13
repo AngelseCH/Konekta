@@ -51,7 +51,7 @@ Usuarios seed: `admin@demo.com / Admin123`, `vendedor@demo.com / Vendedor123`, `
 
 ## Variables
 
-`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN` y `FRONTEND_URL` se documentan en `backend/.env.example`.
+`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`, `RESEND_API_KEY` y `MAIL_FROM` se documentan en `backend/.env.example`.
 
 ## Frontend
 
@@ -70,7 +70,10 @@ El archivo `render.yaml` configura un servicio Node que sirve el frontend, la AP
 1. Crea una base de datos MongoDB Atlas y agrega `0.0.0.0/0` en Network Access para permitir conexiones desde Render. Usa una contraseña de base de datos fuerte en la URI.
 2. En Render, selecciona **New > Blueprint**, conecta `AngelseCH/Konekta` y confirma el servicio descrito por `render.yaml`.
 3. En el Environment del servicio, configura `MONGO_URI` con la URI de Atlas. Render genera `JWT_SECRET` automáticamente.
-4. Confirma el primer deploy y abre la URL del servicio. `/health` debe responder con `status: up`.
+4. Para habilitar recuperación por correo, crea una API key en Resend y verifica el dominio remitente. Configura `RESEND_API_KEY` con la clave y `MAIL_FROM` con un remitente del dominio verificado (por ejemplo, `Konekta <cuentas@tudominio.com>`). No uses `onboarding@resend.dev` para usuarios reales.
+5. Confirma el deploy y abre la URL del servicio. `/health` debe responder con `status: up`. El flujo de recuperación devuelve un código que Resend envía al correo de la cuenta.
+
+Los viajes compartidos se publican como servicios en la categoría **Viajes compartidos**. El mapa usa Leaflet, OpenStreetMap y OSRM; no requiere claves adicionales.
 
 No uses el URI local de MongoDB (`mongodb://127.0.0.1...`) en Render. El disco persistente necesita un plan de Render que admita discos; si cambias el servicio a un plan sin disco, las imágenes cargadas se perderán al reiniciar o desplegar. Para dominios personalizados, agrega sus orígenes separados por comas en `FRONTEND_URL` para autorizar CORS y Socket.IO.
 

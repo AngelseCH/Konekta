@@ -3,6 +3,7 @@ import { User } from '../models/User.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { signToken } from '../utils/jwt.js';
+import { sendPasswordResetEmail } from '../utils/email.js';
 
 const publicUser = (user) => ({ id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, favorites: user.favorites });
 
@@ -35,9 +36,17 @@ const forgotPassword = asyncHandler(async (request, response) => {
   user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
   await user.save();
 
+  try {
+    await sendPasswordResetEmail(user.email, token);
+  } catch (error) {
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+    throw error;
+  }
+
   response.json({
     ok: true,
-    data: { token },
     message: 'Si existe una cuenta con ese email, te enviamos un código para recuperar la contraseña.'
   });
 });

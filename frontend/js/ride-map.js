@@ -10,8 +10,8 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
   }
 
   const leaflet = window.L;
-  const origin = ride.origin || {};
-  const destination = ride.destination || {};
+  const origin = { ...(ride.origin || {}) };
+  const destination = { ...(ride.destination || {}) };
   const startingPoint = hasCoordinates(origin) ? toCoordinates(origin) : hasCoordinates(destination) ? toCoordinates(destination) : mapCenter;
   const map = leaflet.map(element, { scrollWheelZoom: false }).setView(startingPoint, hasCoordinates(origin) || hasCoordinates(destination) ? 12 : 5);
   leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -52,6 +52,7 @@ export const mountRideMap = (element, { ride = {}, onPointSelected } = {}) => {
   };
 
   const setPoint = (kind, point) => {
+    Object.assign(kind === 'origin' ? origin : destination, point);
     const coordinates = toCoordinates(point);
     const color = kind === 'origin' ? '#38765e' : '#a34655';
     markers[kind]?.remove();
