@@ -63,7 +63,8 @@ const sendThroughSmtp = async (recipient, token) => {
 };
 
 const sendPasswordResetEmail = async (recipient, token) => {
-  if (!env.resendApiKey) return sendThroughSmtp(recipient, token);
+  if (!env.resendApiKey && env.nodeEnv !== 'production') return sendThroughSmtp(recipient, token);
+  if (!env.resendApiKey) throw new ApiError(503, 'Configura RESEND_API_KEY y MAIL_FROM en producción para enviar correos.');
   if (!env.resendApiKey || !env.mailFrom) {
     throw new ApiError(503, 'La recuperación por correo todavía no está configurada. Contacta al administrador.');
   }

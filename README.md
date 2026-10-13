@@ -52,7 +52,7 @@ Usuarios seed: `admin@demo.com / Admin123`, `vendedor@demo.com / Vendedor123`, `
 
 ## Variables
 
-`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`, `CLOUDINARY_*`, `RESEND_API_KEY`, `MAIL_FROM` y `SMTP_*` se documentan en `.env.example`, en la raíz. Para recuperación con Gmail, configura `SMTP_USER` con la cuenta remitente y `SMTP_PASS` con una contraseña de aplicación. MongoDB debe estar disponible para iniciar el backend.
+`NODE_ENV`, `PORT`, `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `FRONTEND_URL`, `CLOUDINARY_*`, `RESEND_API_KEY`, `MAIL_FROM` y `SMTP_*` se documentan en `.env.example`, en la raíz. SMTP puede usarse en desarrollo local. En Render, configura Resend por HTTPS. MongoDB debe estar disponible para iniciar el backend.
 
 ## Frontend
 
@@ -72,7 +72,7 @@ El archivo `render.yaml` configura un servicio Node que sirve el frontend, la AP
 2. En Render, selecciona **New > Blueprint**, conecta `AngelseCH/Konekta` y confirma el servicio descrito por `render.yaml`.
 3. En el Environment del servicio, configura `MONGO_URI` con la URI de Atlas. Render genera `JWT_SECRET` automáticamente.
 4. Configura las credenciales de Cloudinary para permitir que los usuarios suban imágenes.
-5. Para habilitar recuperación por Gmail, configura `SMTP_USER` y `SMTP_PASS` con una contraseña de aplicación de la cuenta remitente. Como alternativa, configura `RESEND_API_KEY` y `MAIL_FROM` con un remitente verificado en Resend.
+5. Para habilitar recuperación en Render, configura `RESEND_API_KEY` y `MAIL_FROM` con un remitente verificado en Resend. El plan gratuito de Render bloquea conexiones SMTP salientes; por eso la app usa la API HTTPS de Resend en producción.
 6. Confirma el deploy y abre la URL del servicio. `/health` debe responder con `status: up`. El flujo de recuperación devuelve un código que Resend envía al correo de la cuenta.
 
 Los viajes compartidos se publican como servicios en la categoría **Viajes compartidos**. El mapa usa Leaflet, OpenStreetMap y OSRM; no requiere claves adicionales.
