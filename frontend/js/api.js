@@ -16,7 +16,7 @@ export const request = async (path, options = {}) => {
     clearSession();
     window.dispatchEvent(new CustomEvent('auth:expired'));
   }
-  if (!response.ok || payload.ok === false) throw new ApiError(payload.message || 'No se pudo completar la solicitud', response.status, payload.details);
+  if (!response.ok || payload.ok === false) throw new ApiError(payload.message || 'No pudimos completar esta acción. Revisa la información e inténtalo de nuevo.', response.status, payload.details);
   return payload;
 };
 

@@ -16,11 +16,14 @@ export const icon = (name) => {
 
 export const showToast = (message, type = 'error') => {
   const region = document.querySelector('#toast-region');
+  if (!region) return;
   const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.textContent = message;
+  const normalizedType = type === 'success' ? 'success' : type === 'info' ? 'info' : 'error';
+  toast.className = `toast toast-${normalizedType}`;
+  toast.setAttribute('role', 'status');
+  toast.innerHTML = `<strong>${normalizedType === 'success' ? 'Listo' : normalizedType === 'info' ? 'Aviso' : 'Alerta'}</strong><span>${escapeHtml(message)}</span>`;
   region.append(toast);
-  window.setTimeout(() => toast.remove(), 4000);
+  window.setTimeout(() => toast.remove(), 4200);
 };
 
 export const setLoading = (button, loading, label) => {
