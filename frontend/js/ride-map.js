@@ -14,7 +14,7 @@ export const mountRideMap = (element, { ride = {}, onPointSelected, onPointMoved
   const destination = { ...(ride.destination || {}) };
   const startingPoint = hasCoordinates(origin) ? toCoordinates(origin) : hasCoordinates(destination) ? toCoordinates(destination) : mapCenter;
   const map = leaflet.map(element, { scrollWheelZoom: false }).setView(startingPoint, hasCoordinates(origin) || hasCoordinates(destination) ? 12 : 11);
-  leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  leaflet.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
