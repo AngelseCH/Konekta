@@ -91,7 +91,14 @@ const sendPasswordResetEmail = async (recipient, token) => {
   }
 
   if (!response.ok) {
-    throw new ApiError(502, 'No se pudo enviar el correo de recuperación. Inténtalo de nuevo más tarde.');
+    const providerError = await response.json().catch(() => ({}));
+    console.error('[password-reset-email] Resend rejected the request', {
+      status: response.status,
+      code: providerError.name,
+      message: providerError.message
+    });
+    const status = response.status >= 500 ? 502 : 503;
+    throw new ApiError(status, 'No se pudo enviar el correo de recuperación. Revisa la configuración del servicio de correo.');
   }
 };
 
