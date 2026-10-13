@@ -22,9 +22,11 @@ app.use(helmet({
 	contentSecurityPolicy: {
 		directives: {
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
-			'connect-src': ["'self'", 'ws:', 'wss:'],
-			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com'],
-			'style-src': ["'self'", 'https://fonts.googleapis.com'],
+			'script-src': ["'self'", 'https://unpkg.com'],
+			'connect-src': ["'self'", 'ws:', 'wss:', 'https://router.project-osrm.org'],
+			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com', 'https://*.tile.openstreetmap.org'],
+			'style-src': ["'self'", 'https://fonts.googleapis.com', 'https://unpkg.com'],
+			'style-src-attr': ["'unsafe-inline'"],
 			'font-src': ["'self'", 'https://fonts.gstatic.com', 'data:']
 		}
 	}

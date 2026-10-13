@@ -15,6 +15,20 @@ const productSchema = new mongoose.Schema({
     lat: { type: Number, min: -90, max: 90 },
     lng: { type: Number, min: -180, max: 180 }
   },
+  ride: {
+    origin: {
+      address: { type: String, trim: true, maxlength: 240 },
+      lat: { type: Number, min: -90, max: 90 },
+      lng: { type: Number, min: -180, max: 180 }
+    },
+    destination: {
+      address: { type: String, trim: true, maxlength: 240 },
+      lat: { type: Number, min: -90, max: 90 },
+      lng: { type: Number, min: -180, max: 180 }
+    },
+    departureAt: { type: Date },
+    seatsAvailable: { type: Number, min: 1, max: 8 }
+  },
   schedule: {
     monday: { type: String, trim: true, default: '' },
     tuesday: { type: String, trim: true, default: '' },
