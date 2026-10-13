@@ -23,7 +23,7 @@ app.use(helmet({
 		directives: {
 			...helmet.contentSecurityPolicy.getDefaultDirectives(),
 			'script-src': ["'self'", 'https://unpkg.com'],
-			'connect-src': ["'self'", 'ws:', 'wss:', 'https://router.project-osrm.org'],
+			'connect-src': ["'self'", 'ws:', 'wss:', 'https://router.project-osrm.org', 'https://unpkg.com'],
 			'img-src': ["'self'", 'data:', 'blob:', 'https://res.cloudinary.com', 'https://*.tile.openstreetmap.org'],
 			'style-src': ["'self'", 'https://fonts.googleapis.com', 'https://unpkg.com'],
 			'style-src-attr': ["'unsafe-inline'"],
