@@ -25,12 +25,8 @@ const env = {
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || '',
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || '',
   cloudinaryFolder: process.env.CLOUDINARY_FOLDER || 'konekta',
-  resendApiKey: process.env.RESEND_API_KEY || '',
-  mailFrom: process.env.MAIL_FROM || '',
-  smtpHost: process.env.SMTP_HOST || 'smtp.gmail.com',
-  smtpPort: Number(process.env.SMTP_PORT || 465),
-  smtpUser: process.env.SMTP_USER || '',
-  smtpPass: process.env.SMTP_PASS || ''
+  sendgridApiKey: process.env.SENDGRID_API_KEY || '',
+  mailFrom: process.env.MAIL_FROM || ''
 };
 
 export { env };
