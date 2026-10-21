@@ -69,6 +69,15 @@
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .metric-card, .card { min-width: 0; padding: 15px; }
   .metric-card strong { margin-top: 10px; font-size: 24px; overflow-wrap: anywhere; }
+  .table-heading { min-width: 0; }
+  .table-heading #new-product { width: 100%; min-height: 44px; }
+  .product-form { width: 100%; min-width: 0; padding: 16px; }
+  .product-form > *, .product-form .form-grid > *, .product-form .ride-fields > * { min-width: 0; }
+  .product-form .input, .product-form select, .product-form textarea { width: 100%; max-width: 100%; min-width: 0; }
+  .product-form .image-upload-dropzone { width: 100%; min-width: 0; overflow: hidden; }
+  .product-form .image-upload-dropzone input[type="file"] { display: block; max-width: 100%; min-width: 0; }
+  .product-form .upload-dropzone-label, .product-form .field-hint { overflow-wrap: anywhere; }
+  .product-form #save-product { width: 100%; min-height: 46px; }
   .form-grid, .schedule-grid, .settings-grid { grid-template-columns: minmax(0, 1fr); }
   .form-field-wide { grid-column: auto; }
   .product-table { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
