@@ -4,7 +4,6 @@ import { connectDatabase } from './src/config/db.js';
 import { createSocketServer } from './src/config/socket.js';
 import { env } from './src/config/env.js';
 
-(
 const server = http.createServer(app);
 const io = createSocketServer(server);
 app.set('io', io);
